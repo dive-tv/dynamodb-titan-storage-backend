@@ -19,8 +19,8 @@ host: localhost
 port: 8182
 threadPoolWorker: 1
 gremlinPool: 8
-scriptEvaluationTimeout: 30000
-serializedResponseTimeout: 30000
+scriptEvaluationTimeout: 600000
+serializedResponseTimeout: 600000
 channelizer: org.apache.tinkerpop.gremlin.server.channel.WebSocketChannelizer
 graphs: {
   graph: conf/gremlin-server/dynamodb-local.properties}
@@ -42,8 +42,8 @@ serializers:
 processors:
   - { className: org.apache.tinkerpop.gremlin.server.op.session.SessionOpProcessor, config: { sessionTimeout: 28800000 }}
 metrics: {
-  consoleReporter: {enabled: false, interval: 180000},
-  csvReporter: {enabled: false, interval: 180000, fileName: /tmp/gremlin-server-metrics.csv},
+  consoleReporter: {enabled: false, interval: 60000},
+  csvReporter: {enabled: true, interval: 60000, fileName: /tmp/gremlin-server-metrics.csv},
   jmxReporter: {enabled: false},
   slf4jReporter: {enabled: false, interval: 180000},
   gangliaReporter: {enabled: false, interval: 180000, addressingMode: MULTICAST},
