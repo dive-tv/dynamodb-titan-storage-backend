@@ -14,7 +14,6 @@
  */
 package com.tagsonomy.touchvie.titan;
 
-import java.io.File;
 import java.net.URL;
 
 import org.apache.commons.configuration.Configuration;
@@ -26,7 +25,6 @@ import com.amazon.titan.diskstorage.dynamodb.DynamoDBDelegate;
 import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
-import com.google.common.base.Preconditions;
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.thinkaurelius.titan.diskstorage.BackendException;

@@ -8,17 +8,34 @@ public class TitanBenchmark {
 
 	public static void main(String[] args) {
 
-		if (args.length < 2) {
-			System.out.println("Usage: java TitanBenchmark <graph_config_path> <card_id> ...");
-			System.exit(-1);
-		}
+		if (args.length < 2)
+			printUsage();
 
 		try {
-
-			TitanUtil util = new TitanUtil(args[0]);
+			
+			String mode = args[0];
+			
+			TitanUtil util = new TitanUtil(args[1]);
 			TitanGraph graph = util.openGraph();
-			for (int i = 1; i < args.length; i++) 
-				test(graph, args[i]);
+			
+			if (mode.equals("-c")) {
+				
+				TitanGraphFactory.load(graph, Integer.MAX_VALUE, Integer.MAX_VALUE, true);
+				
+			} else if (mode.equals("-d")) {
+				
+				util.tearDownGraph(graph);
+
+			} else if (mode.equals("-t")) {
+				
+				if (args.length < 3)
+					printUsage();
+				
+				for (int i = 2; i < args.length; i++) 
+					test(graph, args[i]);	
+			} else {
+				printUsage();
+			}
 
 		} catch (Exception ex) {
 			System.err.println(ex);
@@ -40,5 +57,13 @@ public class TitanBenchmark {
 
 		for (Object card : cards)
 			System.out.println("  - " + (String) card);
+	}
+	
+	private static void printUsage() {
+		System.out.println("Usage: java TitanBenchmark [-c | -t | -d] <graph_config_path> (<card_id>) ...");
+		System.out.println(" -c : create graph");
+		System.out.println(" -t : test graph (mandatory card ID list)");
+		System.out.println(" -d : delete graph");
+		System.exit(-1);
 	}
 }
