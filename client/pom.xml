@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.tagsonomy.touchvie</groupId>
+    <artifactId>titan-benchmark</artifactId>
+    <version>0.0.1</version>
+    <packaging>jar</packaging>
+    <name>Titan Benchmark</name>
+    <description>Touchvie benchmark for DynamoDB backend for Titan</description>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jdk.version>1.8</jdk.version>
+        <aws.dynamodb.titan.version>1.0.0</aws.dynamodb.titan.version>
+        <maven.compiler.plugin.version>3.3</maven.compiler.plugin.version>
+    </properties>
+
+    <!-- Libraries -->
+    <dependencies>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>dynamodb-titan100-storage-backend</artifactId>
+            <version>${aws.dynamodb.titan.version}</version>
+        </dependency>
+        <dependency>
+	        <groupId>com.thinkaurelius.titan</groupId>
+	        <artifactId>titan-es</artifactId>
+	        <version>1.0.0</version>
+        </dependency>
+        <dependency>
+	        <groupId>org.elasticsearch</groupId>
+	        <artifactId>elasticsearch</artifactId>
+	        <version>1.5.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
