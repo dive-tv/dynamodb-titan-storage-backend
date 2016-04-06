@@ -93,17 +93,17 @@ public class TitanGraphFactory {
 		// load cards
 		int line = 0;
 		BlockingQueue<Runnable> creationQueue = new LinkedBlockingQueue<>();
-		try (CSVReader reader = new CSVReader(new FileReader("/tmp/card_graph/nodes.csv"), ',')) {
+		try (CSVReader reader = new CSVReader(new FileReader("/tmp/card_graph/nodes.txt"), '\t')) {
 			String[] nextLine;
 			while ((nextLine = reader.readNext()) != null && line < nodesToLoad) {
 				line++;
 
-				String cardId = nextLine[0];
+				String cardId = nextLine[1];
 				Integer cardType = 0;
 				try {
-					cardType = Integer.parseInt(nextLine[1]);
+					cardType = Integer.parseInt(nextLine[0]);
 				} catch (Exception ex) {
-					System.err.println("Error parsing int: " + nextLine[1]);
+					System.err.println("Error parsing int: " + nextLine[0]);
 					LOG.error("error loading card {} {}", ex.getMessage(),
 							ExceptionUtils.getRootCause(ex).getMessage());
 				}
@@ -114,7 +114,7 @@ public class TitanGraphFactory {
 		// load relationships
 		BlockingQueue<Runnable> relQueue = new LinkedBlockingQueue<>();
 		line = 0;
-		try (CSVReader reader = new CSVReader(new FileReader("/tmp/card_graph/edges.csv"), ',')) {
+		try (CSVReader reader = new CSVReader(new FileReader("/tmp/card_graph/edges.txt"), '\t')) {
 			String[] nextLine;
 			while ((nextLine = reader.readNext()) != null && line < edgesToLoad) {
 				line++;
