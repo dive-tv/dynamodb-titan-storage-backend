@@ -1,7 +1,5 @@
 package com.tagsonomy.touchvie.titan;
 
-import java.util.List;
-
 import com.thinkaurelius.titan.core.TitanGraph;
 
 public class TitanBenchmark {
@@ -48,15 +46,13 @@ public class TitanBenchmark {
 	public static void test(final TitanGraph graph, final String cardId) throws Exception {
 
 		Long start = System.currentTimeMillis();
-		// List<String> cards = graph
-		List<Object> cards = graph.traversal().V().has("card_id", cardId).out().out().values("card_id").toList();
-		// .toStream()
-		// .map(o -> o.toString())
-		// .collect(Collectors.toList());
-		System.out.println("Took " + (System.currentTimeMillis() - start) + "ms");
+		
+		Long count = graph.traversal().V().has("card_id", cardId).out().out().out().count().next();
+		
+		System.out.println(count + " vertices. Took " + (System.currentTimeMillis() - start) + "ms");
 
-		for (Object card : cards)
-			System.out.println("  - " + (String) card);
+		//for (Object card : cards)
+		//	System.out.println("  - " + (String) card);
 	}
 	
 	private static void printUsage() {
