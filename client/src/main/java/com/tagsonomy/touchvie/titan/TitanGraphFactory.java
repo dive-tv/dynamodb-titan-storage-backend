@@ -69,27 +69,39 @@ public class TitanGraphFactory {
 	private static final String TIMER_CREATE = "TouchvieTestFactory.create_";
 	private static final String COUNTER_GET = "TouchvieTestFactory.get_";
 	private static final AtomicInteger COMPLETED_TASK_COUNT = new AtomicInteger(0);
-	private static final int POOL_SIZE = 10;
+	private static final int POOL_SIZE = 40;
 
 	public static void load(final TitanGraph graph, final int nodesToLoad, final int edgesToLoad, final boolean report) throws Exception {
 
-		TitanManagement mgmt = graph.openManagement();
-		if (mgmt.getGraphIndex(CARD_ID) == null) {
+		try {
 			
-			final PropertyKey idKey = mgmt.makePropertyKey(CARD_ID).dataType(String.class).make();
-			mgmt.buildIndex(CARD_ID, Vertex.class).addKey(idKey).unique().buildCompositeIndex();
+			//graph.configuration().setProperty("storage.dynamodb.stores.edgestore.write-rate", new Integer(500));
+			//graph.configuration().setProperty("storage.dynamodb.stores.graphindex.write-rate", new Integer(500));
+			//graph.configuration().setProperty("storage.dynamodb.stores.edgestore.read-rate", new Integer(500));
+			//graph.configuration().setProperty("storage.dynamodb.stores.graphindex.read-rate", new Integer(500));
+			
+			TitanManagement mgmt = graph.openManagement();
+			if (mgmt.getGraphIndex(CARD_ID) == null) {
+				
+				final PropertyKey idKey = mgmt.makePropertyKey(CARD_ID).dataType(String.class).make();
+				mgmt.buildIndex(CARD_ID, Vertex.class).addKey(idKey).unique().buildCompositeIndex();
+			}
+			
+			if (mgmt.getGraphIndex(CARD_TYPE) == null) {
+				final PropertyKey typeKey = mgmt.makePropertyKey(CARD_TYPE).dataType(Integer.class).make();
+				mgmt.buildIndex(CARD_TYPE, Vertex.class).addKey(typeKey).buildCompositeIndex();
+			}
+			
+			for (RelType rel : RelType.values())
+				if (mgmt.getEdgeLabel(rel.name()) == null)
+					mgmt.makeEdgeLabel(rel.name()).multiplicity(Multiplicity.MULTI).make();
+			
+			mgmt.commit();
+			
+		} catch (Throwable ex) {
+			System.err.println("Error setting graph up: " + ex.getMessage());
 		}
 		
-		if (mgmt.getGraphIndex(CARD_TYPE) == null) {
-			final PropertyKey typeKey = mgmt.makePropertyKey(CARD_TYPE).dataType(Integer.class).make();
-			mgmt.buildIndex(CARD_TYPE, Vertex.class).addKey(typeKey).buildCompositeIndex();
-		}
-		
-		for (RelType rel : RelType.values())
-			mgmt.makeEdgeLabel(rel.name()).multiplicity(Multiplicity.MULTI).make();
-
-		mgmt.commit();
-
 		// load cards
 		int line = 0;
 		BlockingQueue<Runnable> creationQueue = new LinkedBlockingQueue<>();
@@ -138,7 +150,8 @@ public class TitanGraphFactory {
 
 		System.out.println("Loading " + creationQueue.size() + " cards...");
 		
-		ExecutorService executor = Executors.newFixedThreadPool(POOL_SIZE);
+		ExecutorService executor;
+		executor = Executors.newFixedThreadPool(POOL_SIZE);
 		for (int i = 0; i < POOL_SIZE; i++) {
 			executor.execute(new BatchCommand(graph, creationQueue));
 		}
@@ -149,14 +162,16 @@ public class TitanGraphFactory {
 				REPORTER.report();
 			}
 		}
-
+		
 		System.out.println("Loading " + relQueue.size() + " relationships...");
 		
-		executor = Executors.newSingleThreadExecutor();
-		executor.execute(new BatchCommand(graph, relQueue));
+		executor = Executors.newFixedThreadPool(POOL_SIZE);
+		for (int i = 0; i < POOL_SIZE; i++) {
+			executor.execute(new BatchCommand(graph, relQueue));
+		}
 
 		executor.shutdown();
-		while (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+		while (!executor.awaitTermination(30, TimeUnit.SECONDS)) {
 			LOG.info("Awaiting:" + relQueue.size());
 			if (report) {
 				REPORTER.report();
