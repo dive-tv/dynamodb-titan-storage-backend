@@ -75,6 +75,11 @@ public class TitanGraphFactory {
 
 		try {
 			
+			//graph.configuration().setProperty("storage.dynamodb.stores.edgestore.capacity-write", new Integer(500));
+			//graph.configuration().setProperty("storage.dynamodb.stores.graphindex.capacity-write", new Integer(500));
+			//graph.configuration().setProperty("storage.dynamodb.stores.edgestore.capacity-read", new Integer(500));
+			//graph.configuration().setProperty("storage.dynamodb.stores.graphindex.capacity-read", new Integer(500));
+			
 			//graph.configuration().setProperty("storage.dynamodb.stores.edgestore.write-rate", new Integer(500));
 			//graph.configuration().setProperty("storage.dynamodb.stores.graphindex.write-rate", new Integer(500));
 			//graph.configuration().setProperty("storage.dynamodb.stores.edgestore.read-rate", new Integer(500));
@@ -157,7 +162,7 @@ public class TitanGraphFactory {
 		}
 		executor.shutdown();
 		while (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
-			LOG.info("Awaiting:" + creationQueue.size());
+			System.out.println("Awaiting:" + creationQueue.size());
 			if (report) {
 				REPORTER.report();
 			}
@@ -171,8 +176,8 @@ public class TitanGraphFactory {
 		}
 
 		executor.shutdown();
-		while (!executor.awaitTermination(30, TimeUnit.SECONDS)) {
-			LOG.info("Awaiting:" + relQueue.size());
+		while (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+			System.out.println("Awaiting:" + relQueue.size());
 			if (report) {
 				REPORTER.report();
 			}
