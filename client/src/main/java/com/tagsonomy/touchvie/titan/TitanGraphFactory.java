@@ -56,7 +56,7 @@ public class TitanGraphFactory {
 		}
 	};
 
-	private static final int BATCH_SIZE = 10;
+	private static final int BATCH_SIZE = 20;
 	private static final Logger LOG = LoggerFactory.getLogger(TitanGraphFactory.class);
 	private static final String CARD = "card";
 	private static final String CARD_ID = "card_id";
@@ -69,7 +69,7 @@ public class TitanGraphFactory {
 	private static final String TIMER_CREATE = "TouchvieTestFactory.create_";
 	private static final String COUNTER_GET = "TouchvieTestFactory.get_";
 	private static final AtomicInteger COMPLETED_TASK_COUNT = new AtomicInteger(0);
-	private static final int POOL_SIZE = 40;
+	private static final int POOL_SIZE = 200;
 
 	public static void load(final TitanGraph graph, final int nodesToLoad, final int edgesToLoad, final boolean report) throws Exception {
 
