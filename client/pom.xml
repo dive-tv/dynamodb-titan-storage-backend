@@ -20,7 +20,7 @@
             <artifactId>dynamodb-titan100-storage-backend</artifactId>
             <version>${aws.dynamodb.titan.version}</version>
         </dependency>
-        <dependency>
+        <!--dependency>
 	        <groupId>com.thinkaurelius.titan</groupId>
 	        <artifactId>titan-es</artifactId>
 	        <version>1.0.0</version>
@@ -29,7 +29,7 @@
 	        <groupId>org.elasticsearch</groupId>
 	        <artifactId>elasticsearch</artifactId>
 	        <version>1.5.1</version>
-        </dependency>
+        </dependency-->
     </dependencies>
 
     <build>
